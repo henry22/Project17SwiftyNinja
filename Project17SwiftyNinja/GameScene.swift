@@ -9,6 +9,16 @@
 import SpriteKit
 
 class GameScene: SKScene {
+    
+    var gameScore: SKLabelNode!
+    var score: Int = 0 {
+        didSet {
+            gameScore.text = "Score: \(score)"
+        }
+    }
+    var livesImage = [SKSpriteNode]()
+    var lives = 3
+    
     override func didMoveToView(view: SKView) {
         let background = SKSpriteNode(imageNamed: "sliceBackground")
         background.position = CGPoint(x: 512, y: 384)
@@ -20,9 +30,30 @@ class GameScene: SKScene {
         //stay up in the air a bit longer
         physicsWorld.speed = 0.85
         
-//        createScore()
-//        createLives()
+        createScore()
+        createLives()
 //        createSlices()
+    }
+    
+    func createScore() {
+        gameScore = SKLabelNode(fontNamed: "Chalkduster")
+        gameScore.text = "Score: 0"
+        gameScore.horizontalAlignmentMode = .Left
+        gameScore.fontSize = 48
+        
+        addChild(gameScore)
+        
+        gameScore.position = CGPoint(x: 8, y: 8)
+    }
+    
+    func createLives() {
+        for i in 0..<3 {
+            let spriteNode = SKSpriteNode(imageNamed: "sliceLife")
+            spriteNode.position = CGPoint(x: CGFloat(834 + (i * 70)), y: 720)
+            addChild(spriteNode)
+            
+            livesImage.append(spriteNode)
+        }
     }
     
     override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
