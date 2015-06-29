@@ -22,6 +22,8 @@ class GameScene: SKScene {
     var activeSliceBG: SKShapeNode!
     var activeSliceFG: SKShapeNode!
     
+    var activeSlicePoints = [CGPoint]()
+    
     override func didMoveToView(view: SKView) {
         let background = SKSpriteNode(imageNamed: "sliceBackground")
         background.position = CGPoint(x: 512, y: 384)
@@ -35,7 +37,7 @@ class GameScene: SKScene {
         
         createScore()
         createLives()
-//        createSlices()
+        createSlices()
     }
     
     func createScore() {
@@ -75,6 +77,15 @@ class GameScene: SKScene {
         
         addChild(activeSliceBG)
         addChild(activeSliceFG)
+    }
+    
+    override func touchesMoved(touches: Set<NSObject>, withEvent event: UIEvent) {
+        //finding a touch within the set
+        let touch = touches.first as! UITouch
+        let location = touch.locationInNode(self)
+        
+        activeSlicePoints.append(location)
+//        redrawActiveSlice()
     }
     
     override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
