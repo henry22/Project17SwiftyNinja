@@ -88,6 +88,11 @@ class GameScene: SKScene {
 //        redrawActiveSlice()
     }
     
+    override func touchesEnded(touches: Set<NSObject>, withEvent event: UIEvent) {
+        activeSliceBG.runAction(SKAction.fadeOutWithDuration(0.25))
+        activeSliceFG.runAction(SKAction.fadeOutWithDuration(0.25))
+    }
+    
     override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
         
     }
