@@ -93,8 +93,31 @@ class GameScene: SKScene {
         activeSliceFG.runAction(SKAction.fadeOutWithDuration(0.25))
     }
     
+    override func touchesCancelled(touches: Set<NSObject>!, withEvent event: UIEvent!) {
+        touchesEnded(touches, withEvent: event)
+    }
+    
     override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
+        super.touchesBegan(touches, withEvent: event)
         
+        //Remove all existing points in the activeSlicePoints array, because starting fresh
+        activeSlicePoints.removeAll(keepCapacity: true)
+        
+        //Get the touch location and add it to the activeSlicePoints array
+        let touch = touches.first as! UITouch
+        let location = touch.locationInNode(self)
+        activeSlicePoints.append(location)
+        
+        //Call the redrawActiveSlice() method to clear the slice shapes
+//        redrawActiveSlice()
+        
+        //Remove any actions that are currently attached to the slice shapes
+        activeSliceBG.removeAllActions()
+        activeSliceFG.removeAllActions()
+        
+        //Set both slice shapes to have an alpha value of 1 so they are fully visible
+        activeSliceBG.alpha = 1
+        activeSliceFG.alpha = 1
     }
    
     override func update(currentTime: CFTimeInterval) {
