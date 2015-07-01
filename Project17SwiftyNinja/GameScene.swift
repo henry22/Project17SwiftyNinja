@@ -85,7 +85,7 @@ class GameScene: SKScene {
         let location = touch.locationInNode(self)
         
         activeSlicePoints.append(location)
-//        redrawActiveSlice()
+        redrawActiveSlice()
     }
     
     override func touchesEnded(touches: Set<NSObject>, withEvent event: UIEvent) {
@@ -109,7 +109,7 @@ class GameScene: SKScene {
         activeSlicePoints.append(location)
         
         //Call the redrawActiveSlice() method to clear the slice shapes
-//        redrawActiveSlice()
+        redrawActiveSlice()
         
         //Remove any actions that are currently attached to the slice shapes
         activeSliceBG.removeAllActions()
@@ -118,6 +118,32 @@ class GameScene: SKScene {
         //Set both slice shapes to have an alpha value of 1 so they are fully visible
         activeSliceBG.alpha = 1
         activeSliceFG.alpha = 1
+    }
+    
+    func redrawActiveSlice() {
+        //If we have fewer than two points in our array, we don't have enough data to draw a line so it needs to clear the shapes and exit the method
+        if activeSlicePoints.count < 2 {
+            activeSliceBG.path = nil
+            activeSliceFG.path = nil
+            return
+        }
+        
+        //If we have more than 12 slice points in our array, we need to remove the oldest ones until we have at most 12 – this stops the swipe shapes from becoming too long
+        while activeSlicePoints.count > 12 {
+            activeSlicePoints.removeAtIndex(0)
+        }
+        
+        //It needs to start its line at the position of the first swipe point, then go through each of the others drawing lines to each point
+        var path = UIBezierPath()
+        path.moveToPoint(activeSlicePoints[0])
+        
+        for var i = 1; i < activeSlicePoints.count; ++i {
+            path.addLineToPoint(activeSlicePoints[i])
+        }
+        
+        //It needs to update the slice shape paths so they get drawn using their designs
+        activeSliceBG.path = path.CGPath
+        activeSliceFG.path = path.CGPath
     }
    
     override func update(currentTime: CFTimeInterval) {
