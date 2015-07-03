@@ -175,7 +175,7 @@ class GameScene: SKScene {
     }
     
     func createEnemy(forceBomb: ForceBomb = .Default) {
-        var enemy: SKSpriteNode
+        var enemy: SKSpriteNode!
         
         var enemyType = RandomInt(min: 0, max: 6)
         
@@ -192,8 +192,34 @@ class GameScene: SKScene {
             runAction(SKAction.playSoundFileNamed("launch.caf", waitForCompletion: false))
             enemy.name = "enemy"
         }
+
+        //Give the enemy a random position off the bottom edge of the screen
+        let randomPosition = CGPoint(x: RandomInt(min: 64, max: 960), y: -128)
+        enemy.position = randomPosition
         
-        //position code goes here
+        //Create a random angular velocity, which is how fast something should spin
+        let randomAngularVelocity = CGFloat(RandomInt(min: -6, max: 6)) / 2.0
+        var randomXVelocity = 0
+        
+        //Create a random X velocity (how far to move horizontally) that takes into account the enemy's position
+        if randomPosition.x < 256 {
+            randomXVelocity = RandomInt(min: 8, max: 15)
+        } else if randomPosition.x < 512 {
+            randomXVelocity = RandomInt(min: 3, max: 5)
+        } else if randomPosition.x < 768 {
+            randomXVelocity = -RandomInt(min: 3, max: 5)
+        } else {
+            randomXVelocity = -RandomInt(min: 8, max: 15)
+        }
+        
+        //Create a random Y velocity just to make things fly at different speeds
+        let randomYVelocity = RandomInt(min: 24, max: 32)
+        
+        //Give all enemies a circular physics body where the collisionBitMask is set to 0 so they don't collide
+        enemy.physicsBody = SKPhysicsBody(circleOfRadius: 64)
+        enemy.physicsBody!.velocity = CGVector(dx: randomXVelocity * 40, dy: randomYVelocity * 40)
+        enemy.physicsBody!.angularVelocity = randomAngularVelocity
+        enemy.physicsBody!.collisionBitMask = 0
         
         addChild(enemy)
         activeEnemies.append(enemy)
