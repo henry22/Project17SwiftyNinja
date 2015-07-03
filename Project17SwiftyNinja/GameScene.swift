@@ -26,6 +26,13 @@ class GameScene: SKScene {
     
     var swooshSoundActive = false
     
+    enum ForceBomb {
+        case Never, Always, Default
+    }
+    
+    //track enemies that are currently active in the scene
+    var activeEnemies = [SKSpriteNode]()
+    
     override func didMoveToView(view: SKView) {
         let background = SKSpriteNode(imageNamed: "sliceBackground")
         background.position = CGPoint(x: 512, y: 384)
@@ -165,6 +172,31 @@ class GameScene: SKScene {
         //It needs to update the slice shape paths so they get drawn using their designs
         activeSliceBG.path = path.CGPath
         activeSliceFG.path = path.CGPath
+    }
+    
+    func createEnemy(forceBomb: ForceBomb = .Default) {
+        var enemy: SKSpriteNode
+        
+        var enemyType = RandomInt(min: 0, max: 6)
+        
+        if forceBomb == .Never {
+            enemyType = 1
+        } else if forceBomb == .Always {
+            enemyType = 0
+        }
+        
+        if enemyType == 0 {
+            //bomb code goes here
+        } else {
+            enemy = SKSpriteNode(imageNamed: "penguin")
+            runAction(SKAction.playSoundFileNamed("launch.caf", waitForCompletion: false))
+            enemy.name = "enemy"
+        }
+        
+        //position code goes here
+        
+        addChild(enemy)
+        activeEnemies.append(enemy)
     }
    
     override func update(currentTime: CFTimeInterval) {
