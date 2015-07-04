@@ -7,6 +7,7 @@
 //
 
 import SpriteKit
+import AVFoundation
 
 class GameScene: SKScene {
     
@@ -29,6 +30,8 @@ class GameScene: SKScene {
     enum ForceBomb {
         case Never, Always, Default
     }
+    
+    var bombSoundEffect: AVAudioPlayer!
     
     //track enemies that are currently active in the scene
     var activeEnemies = [SKSpriteNode]()
@@ -175,7 +178,7 @@ class GameScene: SKScene {
     }
     
     func createEnemy(forceBomb: ForceBomb = .Default) {
-        var enemy: SKSpriteNode!
+        var enemy: SKSpriteNode
         
         var enemyType = RandomInt(min: 0, max: 6)
         
@@ -187,6 +190,37 @@ class GameScene: SKScene {
         
         if enemyType == 0 {
             //bomb code goes here
+            
+            //Create a new SKSpriteNode that will hold the fuse and the bomb image as children
+            enemy = SKSpriteNode()
+            //bombs always appear in front of penguins
+            enemy.zPosition = 1
+            enemy.name = "bombContainer"
+            
+            //Create the bomb image, name it "bomb", and add it to the container
+            let bombImage = SKSpriteNode(imageNamed: "sliceBomb")
+            bombImage.name = "bomb"
+            enemy.addChild(bombImage)
+            
+            //If the bomb fuse sound effect is playing, stop it and destroy it
+            if bombSoundEffect != nil {
+                bombSoundEffect.stop()
+                bombSoundEffect = nil
+            }
+            
+            //Create a new bomb fuse sound effect, then play it
+            let path = NSBundle.mainBundle().pathForResource("sliceBombFuse.caf", ofType: nil)!
+            let url = NSURL(fileURLWithPath: path)
+            let sound = AVAudioPlayer(contentsOfURL: url, error: nil)
+            bombSoundEffect = sound
+            sound.play()
+            
+            //Create a particle emitter node, position it so that it's at the end of the bomb image's fuse, and add it to the container
+            let particlePath = NSBundle.mainBundle().pathForResource("sliceFuse", ofType: "sks")!
+            let emitter = NSKeyedUnarchiver.unarchiveObjectWithFile(particlePath) as! SKEmitterNode
+            emitter.position = CGPoint(x: 76, y: 64)
+            enemy.addChild(emitter)
+            
         } else {
             enemy = SKSpriteNode(imageNamed: "penguin")
             runAction(SKAction.playSoundFileNamed("launch.caf", waitForCompletion: false))
