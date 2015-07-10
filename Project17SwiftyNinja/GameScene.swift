@@ -31,6 +31,10 @@ class GameScene: SKScene {
         case Never, Always, Default
     }
     
+    enum SequenceType: Int {
+        case OneNoBomb, One, TwoWithOneBomb, Two, Three, Four, Chain, FastChain
+    }
+    
     var bombSoundEffect: AVAudioPlayer!
     
     //track enemies that are currently active in the scene
