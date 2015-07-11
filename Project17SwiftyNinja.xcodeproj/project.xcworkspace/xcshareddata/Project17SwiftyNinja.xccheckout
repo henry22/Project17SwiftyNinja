@@ -7,14 +7,14 @@
 	<key>IDESourceControlProjectIdentifier</key>
 	<string>C288FFF3-4C6B-47C5-BFB4-8FCB15C8A3EA</string>
 	<key>IDESourceControlProjectName</key>
-	<string>Project17SwiftyNinja</string>
+	<string>project</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
 		<key>2E586E1F791457A37D987EEE73825A2B8A21151C</key>
 		<string>https://github.com/henry22/Project17SwiftyNinja.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>Project17SwiftyNinja.xcodeproj</string>
+	<string>Project17SwiftyNinja.xcodeproj/project.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>2E586E1F791457A37D987EEE73825A2B8A21151C</key>

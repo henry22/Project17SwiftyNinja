@@ -31,14 +31,25 @@ class GameScene: SKScene {
         case Never, Always, Default
     }
     
-    enum SequenceType: Int {
-        case OneNoBomb, One, TwoWithOneBomb, Two, Three, Four, Chain, FastChain
-    }
-    
     var bombSoundEffect: AVAudioPlayer!
     
     //track enemies that are currently active in the scene
     var activeEnemies = [SKSpriteNode]()
+    
+    enum SequenceType: Int {
+        case OneNoBomb, One, TwoWithOneBomb, Two, Three, Four, Chain, FastChain
+    }
+    
+    //wait between the last enemy being destroyed and a new one being created
+    var popTime = 0.9
+    //defines what enemies to create
+    var sequence: [SequenceType]!
+    //where we are right now in the game
+    var sequencePosition = 0
+    //how long to wait before creating a new enemy when the sequence type is .Chain or .FastChain
+    var chainDelay = 3.0
+    //we know when all the enemies are destroyed and we're ready to create more
+    var nextSequenceQueued = true
     
     override func didMoveToView(view: SKView) {
         let background = SKSpriteNode(imageNamed: "sliceBackground")
@@ -282,5 +293,61 @@ class GameScene: SKScene {
                 bombSoundEffect = nil
             }
         }
+    }
+    
+    func tossEnemies() {
+        popTime *= 0.991
+        chainDelay *= 0.99
+        physicsWorld.speed *= 1.02
+        
+        let sequenceType = sequence[sequencePosition]
+        
+        switch sequenceType {
+        case .OneNoBomb:
+            createEnemy(forceBomb: .Never)
+            
+        case .One:
+            createEnemy()
+            
+        case .TwoWithOneBomb:
+            createEnemy(forceBomb: .Never)
+            createEnemy(forceBomb: .Always)
+            
+        case .Two:
+            createEnemy()
+            createEnemy()
+            
+        case .Three:
+            createEnemy()
+            createEnemy()
+            createEnemy()
+            
+        case .Four:
+            createEnemy()
+            createEnemy()
+            createEnemy()
+            createEnemy()
+            
+        case .Chain:
+            createEnemy()
+            
+            runAfterDelay(chainDelay / 5.0) { [unowned self] in self.createEnemy() }
+            runAfterDelay(chainDelay / 5.0 * 2) { [unowned self] in self.createEnemy() }
+            runAfterDelay(chainDelay / 5.0 * 3) { [unowned self] in self.createEnemy() }
+            runAfterDelay(chainDelay / 5.0 * 4) { [unowned self] in self.createEnemy() }
+            
+        case .FastChain:
+            createEnemy()
+            
+            runAfterDelay(chainDelay / 10.0) { [unowned self] in self.createEnemy() }
+            runAfterDelay(chainDelay / 10.0 * 2) { [unowned self] in self.createEnemy() }
+            runAfterDelay(chainDelay / 10.0 * 3) { [unowned self] in self.createEnemy() }
+            runAfterDelay(chainDelay / 10.0 * 4) { [unowned self] in self.createEnemy() }
+        }
+        
+        ++sequencePosition
+        
+        //we don't have a call to tossEnemies() in the pipeline waiting to execute
+        nextSequenceQueued = false
     }
 }
