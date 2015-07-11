@@ -65,6 +65,19 @@ class GameScene: SKScene {
         createScore()
         createLives()
         createSlices()
+        
+        //help players warm up to how the game works
+        sequence = [.OneNoBomb, .OneNoBomb, .TwoWithOneBomb, .TwoWithOneBomb, .Three, .One, .Chain]
+        
+        for i in 0 ... 1000 {
+            var nextSequence = SequenceType(rawValue: RandomInt(min: 2, max: 7))!
+            sequence.append(nextSequence)
+        }
+        
+        //triggers the initial enemy toss after two seconds
+        runAfterDelay(2) { [unowned self] in
+            self.tossEnemies()
+        }
     }
     
     func createScore() {
