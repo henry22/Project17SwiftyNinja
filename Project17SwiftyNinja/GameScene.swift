@@ -288,7 +288,27 @@ class GameScene: SKScene {
     }
    
     override func update(currentTime: CFTimeInterval) {
-        /* Called before each frame is rendered */
+        
+        if activeEnemies.count > 0 {
+            for node in activeEnemies {
+                if node.position.y < -140 {
+                    node.removeFromParent()
+                    
+                    if let index = find(activeEnemies, node) {
+                        activeEnemies.removeAtIndex(index)
+                    }
+                }
+            }
+        } else {
+            if !nextSequenceQueued {
+                runAfterDelay(popTime) { [unowned self] in
+                    self.tossEnemies()
+                }
+            }
+            
+            nextSequenceQueued = true
+        }
+        
         var bombCount = 0
         
         for node in activeEnemies {
