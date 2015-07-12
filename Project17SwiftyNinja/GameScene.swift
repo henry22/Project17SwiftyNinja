@@ -130,6 +130,16 @@ class GameScene: SKScene {
         if !swooshSoundActive {
             playSwooshSound()
         }
+        
+        let nodes = nodesAtPoint(location) as! [SKNode]
+        
+        for node in nodes {
+            if node.name == "enemy" {
+                //destroy penguin
+            } else if node.name == "bomb" {
+                //destroy bomb
+            }
+        }
     }
     
     func playSwooshSound() {
