@@ -136,6 +136,13 @@ class GameScene: SKScene {
         for node in nodes {
             if node.name == "enemy" {
                 //destroy penguin
+                
+                //Create a particle effect over the penguin
+                let explosivePath = NSBundle.mainBundle().pathForResource("sliceHitEnemy", ofType: "sks")!
+                let emitter = NSKeyedUnarchiver.unarchiveObjectWithFile(explosivePath) as! SKEmitterNode
+                emitter.position = node.position
+                addChild(emitter)
+                
             } else if node.name == "bomb" {
                 //destroy bomb
             }
