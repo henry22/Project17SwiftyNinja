@@ -358,8 +358,22 @@ class GameScene: SKScene {
                 if node.position.y < -140 {
                     node.removeFromParent()
                     
-                    if let index = find(activeEnemies, node) {
-                        activeEnemies.removeAtIndex(index)
+                    if node.name == "enemy" {
+                        node.name = ""
+//                        subtractLife()
+                        
+                        node.removeFromParent()
+                        
+                        if let index = find(activeEnemies, node) {
+                            activeEnemies.removeAtIndex(index)
+                        }
+                    } else if node.name == "bombContainer" {
+                        node.name = ""
+                        node.removeFromParent()
+                        
+                        if let index = find(activeEnemies, node) {
+                            activeEnemies.removeAtIndex(index)
+                        }
                     }
                 }
             }
