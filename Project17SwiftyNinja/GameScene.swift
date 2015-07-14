@@ -196,6 +196,7 @@ class GameScene: SKScene {
         }
     }
     
+    
     func playSwooshSound() {
         //no other swoosh sounds are played until we're ready
         swooshSoundActive = true
@@ -360,7 +361,7 @@ class GameScene: SKScene {
                     
                     if node.name == "enemy" {
                         node.name = ""
-//                        subtractLife()
+                        subtractLife()
                         
                         node.removeFromParent()
                         
@@ -404,6 +405,29 @@ class GameScene: SKScene {
                 bombSoundEffect = nil
             }
         }
+    }
+    
+    func subtractLife() {
+        --lives
+        
+        runAction(SKAction.playSoundFileNamed("wrong.caf", waitForCompletion: false))
+        
+        var life: SKSpriteNode
+        
+        if lives == 2 {
+            life = livesImage[0]
+        } else if lives == 1 {
+            life = livesImage[1]
+        } else {
+            life = livesImage[2]
+//            endGame(triggeredByBomb: false)
+        }
+        
+        life.texture = SKTexture(imageNamed: "sliceLifeGone")
+        
+        life.xScale = 1.3
+        life.yScale = 1.3
+        life.runAction(SKAction.scaleTo(1, duration: 0.1))
     }
     
     func tossEnemies() {
