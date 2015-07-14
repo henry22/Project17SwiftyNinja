@@ -51,6 +51,8 @@ class GameScene: SKScene {
     //we know when all the enemies are destroyed and we're ready to create more
     var nextSequenceQueued = true
     
+    var gameEnded = false
+    
     override func didMoveToView(view: SKView) {
         let background = SKSpriteNode(imageNamed: "sliceBackground")
         background.position = CGPoint(x: 512, y: 384)
@@ -191,11 +193,10 @@ class GameScene: SKScene {
                 activeEnemies.removeAtIndex(index)
                 
                 runAction(SKAction.playSoundFileNamed("explosion.caf", waitForCompletion: false))
-//                endGame(triggeredByBomb: true)
+                endGame(triggeredByBomb: true)
             }
         }
     }
-    
     
     func playSwooshSound() {
         //no other swoosh sounds are played until we're ready
@@ -222,6 +223,10 @@ class GameScene: SKScene {
     }
     
     override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
+        if gameEnded {
+            return
+        }
+        
         super.touchesBegan(touches, withEvent: event)
         
         //Remove all existing points in the activeSlicePoints array, because starting fresh
@@ -420,7 +425,7 @@ class GameScene: SKScene {
             life = livesImage[1]
         } else {
             life = livesImage[2]
-//            endGame(triggeredByBomb: false)
+           endGame(triggeredByBomb: false)
         }
         
         life.texture = SKTexture(imageNamed: "sliceLifeGone")
@@ -430,7 +435,32 @@ class GameScene: SKScene {
         life.runAction(SKAction.scaleTo(1, duration: 0.1))
     }
     
+    func endGame(#triggeredByBomb: Bool) {
+        if gameEnded {
+            return
+        }
+        
+        gameEnded = true
+        physicsWorld.speed = 0
+        userInteractionEnabled = false
+        
+        if bombSoundEffect != nil {
+            bombSoundEffect.stop()
+            bombSoundEffect = nil
+        }
+        
+        if triggeredByBomb {
+            livesImage[0].texture = SKTexture(imageNamed: "sliceLifeGone")
+            livesImage[1].texture = SKTexture(imageNamed: "sliceLifeGone")
+            livesImage[2].texture = SKTexture(imageNamed: "sliceLifeGone")
+        }
+    }
+    
     func tossEnemies() {
+        if gameEnded {
+            return
+        }
+        
         popTime *= 0.991
         chainDelay *= 0.99
         physicsWorld.speed *= 1.02
