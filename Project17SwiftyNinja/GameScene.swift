@@ -143,6 +143,31 @@ class GameScene: SKScene {
                 emitter.position = node.position
                 addChild(emitter)
                 
+                //Clear its node name so that it can't be swiped repeatedly
+                node.name = ""
+                
+                //Disable the dynamic of its physics body so that it doesn't carry on falling
+                node.physicsBody!.dynamic = false
+                
+                //Make the penguin scale out and fade out at the same time
+                let scaleOut = SKAction.scaleTo(0.001, duration: 0.2)
+                let fadeOut = SKAction.fadeOutWithDuration(0.2)
+                let group = SKAction.group([scaleOut, fadeOut])
+                
+                //After making the penguin scale out and fade out, we should remove it from the scene
+                let seq = SKAction.sequence([group, SKAction.removeFromParent()])
+                node.runAction(seq)
+                
+                //Add one to the player's score
+                ++score
+                
+                //Remove the enemy from our activeEnemies array
+                let index = find(activeEnemies, node as! SKSpriteNode)
+                activeEnemies.removeAtIndex(index!)
+                
+                //Play a sound so the player knows they hit the penguin
+                runAction(SKAction.playSoundFileNamed("whack.caf", waitForCompletion: false))
+                
             } else if node.name == "bomb" {
                 //destroy bomb
             }
